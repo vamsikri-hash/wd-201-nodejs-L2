@@ -30,7 +30,7 @@ const getPort = (args, defaultPort) => {
       port = parseInt(portNum);
     } else {
       console.log(
-        `Port arg not supplied correctly ! Using default port - ${portNum}`
+        `Port arg not supplied correctly ! Using default port - ${defaultPort}`
       );
       port = defaultPort;
     }
