@@ -1,0 +1,20 @@
+{
+  "name": "wd-201-nodejs",
+  "version": "1.0.0",
+  "description": "working with npm",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vamsikri-hash/wd-201-nodejs.git"
+  },
+  "author": "vamsi.bellam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vamsikri-hash/wd-201-nodejs/issues"
+  },
+  "homepage": "https://github.com/vamsikri-hash/wd-201-nodejs#readme"
+}

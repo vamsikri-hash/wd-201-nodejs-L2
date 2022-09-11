@@ -1,0 +1,197 @@
+<!-- registration.html -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>User Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="flex flex-col mt-8">
+      <form
+        id="user-form"
+        class="mx-auto bg-gray-300 w-1/3 p-5 border border-gray-200 rounded-md"
+      >
+        <div class="flex flex-col mt-3">
+          <label for="name"
+            >Name<span class="font-bold text-orange-600">*</span></label
+          >
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter Name"
+            class="border border-gray-400 rounded-md text-xl p-2 mt-1"
+            required
+          />
+        </div>
+        <div class="flex flex-col mt-3">
+          <label for="name"
+            >Email<span class="font-bold text-orange-600">*</span></label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter Email"
+            class="border border-gray-400 rounded-md text-xl p-2 mt-1"
+            required
+          />
+        </div>
+
+        <div class="flex flex-col mt-3">
+          <label for="name"
+            >Password<span class="font-bold text-orange-600">*</span></label
+          >
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter Password"
+            class="border border-gray-400 rounded-md text-xl p-2 mt-1"
+            required
+          />
+        </div>
+
+        <div class="flex flex-col mt-3">
+          <label for="name"
+            >Date of birth<span class="font-bold text-orange-600"
+              >*</span
+            ></label
+          >
+          <input
+            type="date"
+            id="dob"
+            name="dob"
+            class="border border-gray-400 rounded-md text-xl p-2 mt-2"
+            required
+          />
+        </div>
+
+        <div class="flex space-x-2 items-center mt-10">
+          <input
+            type="checkbox"
+            id="acceptTerms"
+            name="acceptTerms"
+            class="w-5 h-5"
+          />
+          <label for="name">Accept Terms and Conditions</label>
+        </div>
+
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mt-3 mr-5"
+        >
+          Add
+        </button>
+        <button
+          type="reset"
+          class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded mt-3"
+        >
+          Reset
+        </button>
+      </form>
+    </div>
+    <div class="mx-20 mb-10">
+      <h2 class="text-2xl font-bold mb-5 text-center">Entries</h2>
+      <div id="user-entries"></div>
+    </div>
+    <script>
+      let userEntries = localStorage.getItem("user-entries");
+
+      if (userEntries) {
+        userEntries = JSON.parse(userEntries);
+      } else {
+        userEntries = [];
+      }
+
+      const displayEntries = () => {
+        const savedUserEntries = localStorage.getItem("user-entries");
+        let entries = "";
+        if (savedUserEntries) {
+          const parsedUserEntries = JSON.parse(savedUserEntries);
+          entries = parsedUserEntries
+            .map((entry) => {
+              const name = `<td class="py-4 px-6">${entry.name}</td>`;
+              const email = `<td class="py-4 px-6">${entry.email}</td>`;
+              const password = `<td class="py-4 px-6">${entry.password}</td>`;
+              const dob = `<td class="py-4 px-6">${entry.dob}</td>`;
+              const acceptTerms = `<td class="py-4 px-6">${entry.acceptTermsAndConditions}</td>`;
+              const row = `<tr class="border border-gray-400">
+                       ${name} ${email} ${password} ${dob} ${acceptTerms}
+                     </tr>`;
+              return row;
+            })
+            .join("\n");
+        }
+        var table = `<table border='1' width='100%' class="border border-slate-400 w-full text-sm text-left">
+      <thead class="text-sm text-gray-700 uppercase bg-gray-100">
+      <tr>
+      <th class="py-3 px-6">Name</th>
+      <th class="py-3 px-6">Email</th>
+      <th class="py-3 px-6">Password</th>
+      <th class="py-3 px-6">dob</th>
+      <th class="py-3 px-6">accepted terms?</th>
+    </tr></thead> ${entries} </table>`;
+        let details = document.getElementById("user-entries");
+        details.innerHTML = table;
+      };
+
+      const saveUserForm = (event) => {
+        event.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const dob = document.getElementById("dob").value;
+        const acceptTermsAndConditions =
+          document.getElementById("acceptTerms").checked;
+        const userDetails = {
+          name,
+          email,
+          password,
+          dob,
+          acceptTermsAndConditions,
+        };
+
+        userEntries.push(userDetails);
+        localStorage.setItem("user-entries", JSON.stringify(userEntries));
+
+        displayEntries();
+
+        document.getElementById("user-form").reset();
+      };
+
+      let form = document.getElementById("user-form");
+      form.addEventListener("submit", saveUserForm, true);
+
+      displayEntries();
+
+      const calculateAge = (dob) => {
+        const today = new Date();
+        const dateOfBirth = new Date(dob);
+        let age = today.getFullYear() - dateOfBirth.getFullYear() - 1;
+        const differenceInMonth = today.getMonth() - dateOfBirth.getMonth();
+        const differenceInDate = today.getDate() - dateOfBirth.getDate();
+
+        if (differenceInMonth > 0) {
+          age = age + 1;
+        } else if (differenceInMonth === 0) {
+          if (differenceInDate > 0) age = age + 1;
+        }
+        return age;
+      };
+
+      const datePicker = document.getElementById("dob");
+      datePicker.max = new Date().toISOString().split("T")[0];
+
+      datePicker.addEventListener("change", () => {
+        const age = calculateAge(datePicker.value);
+        if (age < 18 || age > 55) {
+          datePicker.setCustomValidity("Age should be between 18 and 55 only!");
+        } else {
+          datePicker.setCustomValidity("");
+        }
+        datePicker.reportValidity();
+      });
+    </script>
+  </body>
+</html>
